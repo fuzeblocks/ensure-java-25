@@ -1,0 +1,1 @@
+# ensure-java-25
