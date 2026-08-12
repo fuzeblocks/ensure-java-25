@@ -4,7 +4,6 @@ set -e
 
 JAVA_VERSION="25.0.1-open"
 SDKMAN_DIR="$HOME/.sdkman"
-JAVA_HOME_PATH="$SDKMAN_DIR/candidates/java/$JAVA_VERSION"
 
 echo "=== Checking Java ==="
 
@@ -21,13 +20,10 @@ else
 
     echo "=== Installing Java $JAVA_VERSION ==="
 
-    if ! sdk list java | grep -q "$JAVA_VERSION"; then
-        echo "Java $JAVA_VERSION is not available through SDKMAN."
-        exit 1
-    fi
-
-    if [ ! -d "$JAVA_HOME_PATH" ]; then
+    if [ ! -d "$SDKMAN_DIR/candidates/java/$JAVA_VERSION" ]; then
         sdk install java "$JAVA_VERSION"
+    else
+        echo "Java $JAVA_VERSION is already installed."
     fi
 
     echo "=== Activating Java $JAVA_VERSION ==="
@@ -35,17 +31,11 @@ else
     sdk use java "$JAVA_VERSION"
 fi
 
-# Force Java 25 for the current process
-export JAVA_HOME="$JAVA_HOME_PATH"
+export JAVA_HOME="$SDKMAN_DIR/candidates/java/$JAVA_VERSION"
 export PATH="$JAVA_HOME/bin:$PATH"
 
 echo "=== Java environment ==="
 echo "JAVA_HOME=$JAVA_HOME"
-echo "java:"
+
 "$JAVA_HOME/bin/java" -version
-
-echo "javac:"
 "$JAVA_HOME/bin/javac" -version
-
-echo "PATH:"
-echo "$PATH"
